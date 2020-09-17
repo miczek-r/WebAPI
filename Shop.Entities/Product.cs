@@ -4,10 +4,15 @@ namespace Shop.Entities
 {
     public class Product
     {
-        public int id { get; set; }
-        public string manufacturer { get; set; }
-        public string model { get; set; }
-        public float price { get; set; }
-        public int quantity { get; set; }
+        public int Id { get; set; }
+        public string Manufacturer { get; set; }
+        public string Model { get; set; }
+        public float Price { get; set; }
+        public int StashQuantity { get; set; }
+
+        
     }
+
+
+    
 }

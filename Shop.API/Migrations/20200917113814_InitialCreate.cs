@@ -9,7 +9,7 @@ namespace Shop.API.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Customer",
+                name: "Customers",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -20,7 +20,7 @@ namespace Shop.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Customer", x => x.Id);
+                    table.PrimaryKey("PK_Customers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -56,23 +56,23 @@ namespace Shop.API.Migrations
                 name: "Products",
                 columns: table => new
                 {
-                    id = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    manufacturer = table.Column<string>(nullable: true),
-                    model = table.Column<string>(nullable: true),
-                    price = table.Column<float>(nullable: false),
-                    quantity = table.Column<int>(nullable: false)
+                    Manufacturer = table.Column<string>(nullable: true),
+                    Model = table.Column<string>(nullable: true),
+                    Price = table.Column<float>(nullable: false),
+                    StashQuantity = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Products", x => x.id);
+                    table.PrimaryKey("PK_Products", x => x.Id);
                 });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Customer");
+                name: "Customers");
 
             migrationBuilder.DropTable(
                 name: "OrderPositions");
