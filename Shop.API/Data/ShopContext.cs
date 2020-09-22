@@ -1,23 +1,20 @@
-﻿using Shop.Entities;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Shop.Entities;
 
-namespace Shop.Models
-{
     public class ShopContext : DbContext
     {
-       
-        public DbSet<Customer> Customers { get; set; }
-        public DbSet<Order> Orders { get; set; }
-        public DbSet<OrderPostion> OrderPositions { get; set; }
-        public DbSet<Product> Products { get; set; }
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
+        public ShopContext (DbContextOptions<ShopContext> options)
+            : base(options)
         {
-            options.UseMySql("server=127.0.0.1,3306;database=shop;user=root;password=haslo123");
         }
-            
+    
+    public DbSet<Shop.Entities.Customer> Customer { get; set; }
+    
+    public DbSet<Shop.Entities.Order> Order { get; set; }
+    
+    public DbSet<Shop.Entities.Product> Product { get; set; }
     }
-
-
-    
-    
-}

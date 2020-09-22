@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Shop.API.DTO;
 using Shop.Entities;
-using Shop.Models;
 
 namespace Shop.API.Controllers
 {
-    public class CustomersController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class CustomersController : ControllerBase
     {
         private readonly ShopContext _context;
 
@@ -19,135 +21,79 @@ namespace Shop.API.Controllers
             _context = context;
         }
 
-        // GET: Customers
-        public async Task<IActionResult> Index()
+        // GET: api/Customers
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Customer>>> GetCustomer()
         {
-            return View(await _context.Customers.ToListAsync());
+            return await _context.Customer.ToListAsync();
         }
 
-        // GET: Customers/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: api/Customers/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Customer>> GetCustomer(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var customer = await _context.Customer.FindAsync(id);
 
-            var customer = await _context.Customers
-                .FirstOrDefaultAsync(m => m.Id == id);
             if (customer == null)
             {
                 return NotFound();
             }
 
-            return View(customer);
+            return customer;
         }
 
-        // GET: Customers/Create
-        public IActionResult Create()
+        // PUT: api/Customers/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
+        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        [HttpPut]
+        public async Task<IActionResult> PutCustomer(EditCustomerDTO customerDTO)
         {
-            return View();
-        }
+            var customer = new Customer(customerDTO.FirstName, customerDTO.LastName, customerDTO.Email, customerDTO.Id);
+            
 
-        // POST: Customers/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,firstName,lastName,email")] Customer customer)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(customer);
+            _context.Entry(customer).State = EntityState.Modified;
+
+            
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(customer);
+            
+            
+
+            return NoContent();
         }
 
-        // GET: Customers/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var customer = await _context.Customers.FindAsync(id);
-            if (customer == null)
-            {
-                return NotFound();
-            }
-            return View(customer);
-        }
-
-        // POST: Customers/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: api/Customers
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
+        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,firstName,lastName,email")] Customer customer)
+        public async Task<ActionResult<Customer>> PostCustomer(CreateCustomerDTO customerDTO)
         {
-            if (id != customer.Id)
-            {
-                return NotFound();
-            }
+            var customer = new Customer(customerDTO.FirstName, customerDTO.LastName, customerDTO.Email);
+            Console.WriteLine(customer);
+            _context.Customer.Add(customer);
+            await _context.SaveChangesAsync();
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(customer);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CustomerExists(customer.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(customer);
+            return CreatedAtAction("GetCustomer", new { id = customer.Id }, customer);
         }
 
-        // GET: Customers/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // DELETE: api/Customers/5
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<Customer>> DeleteCustomer(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var customer = await _context.Customers
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var customer = await _context.Customer.FindAsync(id);
             if (customer == null)
             {
                 return NotFound();
             }
 
-            return View(customer);
-        }
-
-        // POST: Customers/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var customer = await _context.Customers.FindAsync(id);
-            _context.Customers.Remove(customer);
+            _context.Customer.Remove(customer);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return customer;
         }
 
         private bool CustomerExists(int id)
         {
-            return _context.Customers.Any(e => e.Id == id);
+            return _context.Customer.Any(e => e.Id == id);
         }
     }
 }
