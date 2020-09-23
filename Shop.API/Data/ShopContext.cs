@@ -17,4 +17,5 @@ using Shop.Entities;
     public DbSet<Shop.Entities.Order> Order { get; set; }
     
     public DbSet<Shop.Entities.Product> Product { get; set; }
-    }
+    public DbSet<Shop.Entities.OrderPosition> OrderPosition { get; set; }
+}
